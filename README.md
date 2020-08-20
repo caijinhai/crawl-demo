@@ -15,3 +15,7 @@
 
 // bs4.BeautifulSoup htmllib5
 * html5lib
+
+
+### chrome_driver
+https://chromedriver.storage.googleapis.com/index.html?path=84.0.4147.30/
