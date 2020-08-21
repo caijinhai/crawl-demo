@@ -1,5 +1,6 @@
 
-# requirements
+### Spider Sample Code
+[dir](./sample/)
 * requests
 * selenium  // 自动化测试
 * aiohttp
@@ -12,10 +13,22 @@
 * redis
 * pyspider
 * scrapy
+* html5lib // bs4.BeautifulSoup htmllib5
 
-// bs4.BeautifulSoup htmllib5
-* html5lib
+### phantmojs sample code
+[dir](./phantmojs/examples/)
 
 
 ### chrome_driver
 https://chromedriver.storage.googleapis.com/index.html?path=84.0.4147.30/
+
+
+### framework
+* pyspider
+* scrapy
+
+
+### task
+* youglish
+* * with seleinum get url in opened window
+* * 2captcha resolve recaptcha

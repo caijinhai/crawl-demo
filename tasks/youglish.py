@@ -1,12 +1,19 @@
 import requests
 import time
 import json
+import os
+import xlrd
 import urllib.request, http.cookiejar
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.options import Options
 
 
-driver = webdriver.Chrome(ChromeDriverManager().install())
+# driver = webdriver.Chrome(ChromeDriverManager().install())
+# 使用已打开的浏览器窗口
+chrome_options = Options()
+chrome_options.add_experimental_option("debuggerAddress", "127.0.0.1:9222")
+driver = webdriver.Chrome(ChromeDriverManager().install(), options=chrome_options)
 # driver = webdriver.Chrome()
 key = '******'
 retry = 3
@@ -164,9 +171,9 @@ def youglish_cookie():
 	cookie_str = '__cfduid=d22c2b7fdab12394e3679d85eb71dbf5d1597923638; cf_chl_1=9de164e596c616f; cf_chl_prog=a19; cf_clearance=84e2074e526ab25d655c3d617a46fea94f562630-1597923664-0-1z53e24bdz56169e9z9d2734cc-250; JSESSIONID=8D9B1FBE3B6BFFF9680C631D31FBDC87; width=1614; _ga=GA1.2.2009944912.1597923668; _gid=GA1.2.678748583.1597923670; _gat=1; cookie_consent=1; __gads=ID=3d29180897a327b9:T=1597923673:S=ALNI_MaoD-x-VdL_GrZ4uJ__1rXsXaxtqw; history=27339844/retell/english'
 	
 	cj = http.cookiejar.CookieJar()
-	cookies = cookie_str.split(";")
+	cookies = cookie_str.split("c s
 	for c in cookies:
-	    k,v = a.split("=")
+	    k,v = c.split("=")
 	    cookie = http.cookiejar.Cookie(None, k, v, None, False, "", 
 	                                   False, "", "",
 	                                   False,False, False,False,
@@ -199,36 +206,48 @@ def youglish_cookie():
 def save_youlish_cookie():
 	page_url = 'https://youglish.com/pronounce/retell/english/all'
 
-	# cookie = http.cookiejar.CookieJar()
-	# handler = urllib.request.HTTPCookieProcessor(cookie)
-	# opener = urllib.request.build_opener(handler)
-	# response = opener.open(page_url)
-
-	# print(cookie)
-
-	cookie_str = '__cfduid=d22c2b7fdab12394e3679d85eb71dbf5d1597923638; cf_chl_1=9de164e596c616f; cf_chl_prog=a19; cf_clearance=84e2074e526ab25d655c3d617a46fea94f562630-1597923664-0-1z53e24bdz56169e9z9d2734cc-250; JSESSIONID=8D9B1FBE3B6BFFF9680C631D31FBDC87; width=1614; _ga=GA1.2.2009944912.1597923668; _gid=GA1.2.678748583.1597923670; _gat=1; cookie_consent=1; __gads=ID=3d29180897a327b9:T=1597923673:S=ALNI_MaoD-x-VdL_GrZ4uJ__1rXsXaxtqw; history=27339844/retell/english'
-	
-	cj = http.cookiejar.CookieJar()
-	cookies = cookie_str.split(";")
-	for c in cookies:
-	    k = c.split("=")[0]
-	    v = c.split("=")[1]
-	    cookie = http.cookiejar.Cookie(None, k, v, None, False, "", 
-	                                   False, "", "",
-	                                   False,False, False,False,
-	                                   False,
-	                                   "",
-	                                   "",None)
-
-	    cj.set_cookie(cookie)
-
-	handler = urllib.request.HTTPCookieProcessor(cj)
+	cookie = http.cookiejar.CookieJar()
+	handler = urllib.request.HTTPCookieProcessor(cookie)
 	opener = urllib.request.build_opener(handler)
 	response = opener.open(page_url)
 
+	print(cookie)
+
+def driver_opened_chrome():
+	page_url = 'https://youglish.com/pronounce/retell/english/all'
+
+	dir = os.path.dirname(os.path.abspath(__file__))
+	output_dir = os.path.join(dir, 'output')
+
+	words = get_words(dir)
+	print("total words: %s" % len(words))
+	for word in words:
+		url = 'https://youglish.com/fetch.jsp?vers=4&ts=3404236315972923746306&qp=0&lg=0&accent=0&nagla=1&query=%s' % word
+		driver.get(url)
+
+		json_str = driver.find_element_by_tag_name('pre').get_attribute('innerText')
+		word_file = os.path.join(output_dir, '%s.json' % word)
+		
+		with open(word_file, 'w+') as f:
+			f.write(json_str.strip())
+		
+		time.sleep(2)
+
+
+def get_words(dir):
+		file = os.path.join(dir, 'word.xlsx')
+		book = xlrd.open_workbook(file)
+		sheet = book.sheet_by_index(0)
+		words = []
+		for rx in range(sheet.nrows):
+			if rx > 0:
+				row = sheet.row(rx)
+				words.append(row[0].value.strip())
+		return words
 
 if __name__ == '__main__':
 	# youglish_cookie()
 	# save_youlish_cookie()
-	youglish_recaptcha()
+	# youglish_recaptcha()
+	driver_opened_chrome()
 
