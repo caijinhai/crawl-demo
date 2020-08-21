@@ -17,7 +17,7 @@ def test_v2_recaptcha():
 	driver.get(page_url)
 	time.sleep(5)
 
-	google_key = "6Le-wvkSAAAAAPBMRTvw0Q4Muexq9bi0DJwx_mJ-"
+	google_key = "**************"
 
 	id = create_recaptcha_task_v2(page_url, google_key)
 	if not id:
@@ -120,7 +120,7 @@ def get_recaptcha_task_token(id):
 
 
 def youglish_recaptcha():
-	google_key = 'f9630567-8bfa-4fc9-8ee5-9c91c6276dff'
+	google_key = '******************'
 	search_word = 'retell'
 	page_url = 'https://youglish.com/pronounce/%s/english/all' % search_word
 
