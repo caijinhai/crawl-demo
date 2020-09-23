@@ -26,7 +26,7 @@ https://chromedriver.storage.googleapis.com/index.html?path=84.0.4147.30/
 ### framework
 * pyspider
 * scrapy
-
+* crawlab
 
 ### task
 * youglish
